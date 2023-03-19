@@ -69,6 +69,8 @@ public class TaskController {
             statement.execute();
         } catch (Exception ex) {
             throw new RuntimeException("Erro ao atualizar tarefa " + ex.getMessage(), ex);
+        } finally {
+            ConnectionFactory.closeConnection(connection, statement);
         }
     }
     
@@ -135,7 +137,7 @@ public class TaskController {
                 tasks.add(task);
             }
         } catch (Exception ex) {
-            throw new RuntimeException("Erro ao inserir a tarefa " + ex.getMessage(), ex);
+            throw new RuntimeException("Erro ao buscar tarefas " + ex.getMessage(), ex);
         } finally {
             ConnectionFactory.closeConnection(connection, statement, resultSet);
         }
