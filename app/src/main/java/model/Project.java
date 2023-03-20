@@ -22,7 +22,8 @@ public class Project {
     }
 
     public Project() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        this.createdAt = new Date();
+        this.updatedAt = new Date();
     }
 
     public int getId() {
