@@ -77,7 +77,7 @@ public class Task {
         return completed;
     }
 
-    public void setCompleted(boolean completed) {
+    public void setIsCompleted(boolean completed) {
         this.completed = completed;
     }
 
