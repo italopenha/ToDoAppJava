@@ -30,7 +30,7 @@ public class ProjectController {
             statement.setDate(3, new Date(project.getCreatedAt().getTime()));
             statement.setDate(4, new Date(project.getUpdatedAt().getTime()));
             statement.execute();
-        } catch (Exception ex) {
+        } catch (SQLException ex) {
             throw new RuntimeException("Erro ao salvar o projeto " + ex.getMessage(), ex);
         } finally {
             ConnectionFactory.closeConnection(connection, statement);
