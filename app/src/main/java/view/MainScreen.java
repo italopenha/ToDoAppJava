@@ -14,6 +14,7 @@ import java.util.List;
 import javax.swing.DefaultListModel;
 import model.Project;
 import model.Task;
+import util.DeadlineColumnCellRenderer;
 import util.TaskTableModel;
 
 /**
@@ -30,10 +31,11 @@ public class MainScreen extends javax.swing.JFrame {
 
     public MainScreen() {
         initComponents();
-        decorateTableTasks();
 
         initDataController();
         initComponentsModel();
+
+        decorateTableTasks();
     }
 
     /**
@@ -355,7 +357,7 @@ public class MainScreen extends javax.swing.JFrame {
         Project project = (Project) projectsModel.get(projectIndex);
         taskDialogScreen.setProject(project);
         taskDialogScreen.setVisible(true);
-        
+
         taskDialogScreen.addWindowListener(new WindowAdapter() {
             public void windowClosed(WindowEvent e) {
                 int projectIndex = jListProjects.getSelectedIndex();
@@ -370,7 +372,7 @@ public class MainScreen extends javax.swing.JFrame {
         int rowIndex = jTableTasks.rowAtPoint(evt.getPoint());
         int columnIndex = jTableTasks.columnAtPoint(evt.getPoint());
         Task task = taskModel.getTasks().get(rowIndex);
-        
+
         switch (columnIndex) {
             case 3:
                 taskController.update(task);
@@ -380,7 +382,7 @@ public class MainScreen extends javax.swing.JFrame {
             case 5:
                 taskController.removeById(task.getId());
                 taskModel.getTasks().remove(task);
-                
+
                 int projectIndex = jListProjects.getSelectedIndex();
                 Project project = (Project) projectsModel.get(projectIndex);
                 loadTasks(project.getId());
@@ -458,8 +460,9 @@ public class MainScreen extends javax.swing.JFrame {
         jTableTasks.getTableHeader().setBackground(new Color(0, 153, 102));
         jTableTasks.getTableHeader().setForeground(new Color(255, 255, 255));
 
+        jTableTasks.getColumnModel().getColumn(2).setCellRenderer(new DeadlineColumnCellRenderer());
         // Criando um organizador automático para as colunas da tabela
-        jTableTasks.setAutoCreateRowSorter(true);
+        //jTableTasks.setAutoCreateRowSorter(true);
     }
 
     public void initDataController() {
