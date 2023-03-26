@@ -10,6 +10,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import model.Project;
@@ -373,19 +374,20 @@ public class MainScreen extends javax.swing.JFrame {
         int rowIndex = jTableTasks.rowAtPoint(evt.getPoint());
         int columnIndex = jTableTasks.columnAtPoint(evt.getPoint());
         Task task = taskModel.getTasks().get(rowIndex);
+        int projectIndex = jListProjects.getSelectedIndex();
+        Project project = (Project) projectsModel.get(projectIndex);
 
         switch (columnIndex) {
             case 3:
                 taskController.update(task);
                 break;
             case 4:
+                updateTask(task);
                 break;
             case 5:
                 taskController.removeById(task.getId());
                 taskModel.getTasks().remove(task);
 
-                int projectIndex = jListProjects.getSelectedIndex();
-                Project project = (Project) projectsModel.get(projectIndex);
                 loadTasks(project.getId());
                 break;
         }
@@ -527,5 +529,23 @@ public class MainScreen extends javax.swing.JFrame {
             projectsModel.addElement(project);
         }
         jListProjects.setModel(projectsModel);
+    }
+
+    public void updateTask(Task task) {
+        TaskDialogScreen updateTaskDialogScreen = new TaskDialogScreen(this, rootPaneCheckingEnabled, true);
+        int projectIndex = jListProjects.getSelectedIndex();
+        Project project = (Project) projectsModel.get(projectIndex);
+
+        updateTaskDialogScreen.setProject(project);
+        updateTaskDialogScreen.loadFields(task);
+        updateTaskDialogScreen.setVisible(true);
+
+        updateTaskDialogScreen.addWindowListener(new WindowAdapter() {
+            public void windowClosed(WindowEvent e) {
+                int projectIndex = jListProjects.getSelectedIndex();
+                Project project = (Project) projectsModel.get(projectIndex);
+                loadTasks(project.getId());
+            }
+        });
     }
 }

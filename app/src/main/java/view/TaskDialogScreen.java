@@ -19,12 +19,23 @@ public class TaskDialogScreen extends javax.swing.JDialog {
 
     TaskController controller;
     Project project;
+    boolean taskUpdate = false;
+    int idTaskUpdate = 0;
 
     public TaskDialogScreen(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         hideErrorFields();
         controller = new TaskController();
+        taskUpdate = false;
+    }
+
+    public TaskDialogScreen(java.awt.Frame parent, boolean modal, boolean taskUpdate) {
+        super(parent, modal);
+        initComponents();
+        hideErrorFields();
+        controller = new TaskController();
+        this.taskUpdate = taskUpdate;
     }
 
     /**
@@ -222,9 +233,7 @@ public class TaskDialogScreen extends javax.swing.JDialog {
         try {
             if (isFieldValid()) {
                 Task task = new Task();
-
                 task.setIdProject(project.getId());
-
                 task.setName(jTextFieldName.getText());
                 task.setDescription(jTextAreaDescription.getText());
                 task.setNotes(jTextAreaNotes.getText());
@@ -235,13 +244,19 @@ public class TaskDialogScreen extends javax.swing.JDialog {
                 deadline = dateformat.parse(jFormattedTextFieldDeadline.getText());
                 task.setDeadline(deadline);
 
-                controller.save(task);
+                if (taskUpdate) {
+                    task.setId(idTaskUpdate);
+                    task.setIsCompleted(controller.findById(task.getId()).isCompleted());
+                    controller.update(task);
+                } else {
+                    controller.save(task);
+                }
 
                 JOptionPane.showMessageDialog(rootPane, "Tarefa salva com sucesso!");
                 this.dispose();
             } else {
                 hideErrorFields();
-                
+
                 if (jTextFieldName.getText().isEmpty()) {
                     jLabelNameError.setVisible(true);
                 }
@@ -328,5 +343,17 @@ public class TaskDialogScreen extends javax.swing.JDialog {
 
     public boolean isFieldValid() {
         return (!jTextFieldName.getText().isEmpty()) && (!jFormattedTextFieldDeadline.getText().isEmpty());
+    }
+
+    public void loadFields(Task task) {
+
+        jTextFieldName.setText(task.getName());
+        jTextAreaDescription.setText(task.getDescription());
+        jTextAreaNotes.setText(task.getNotes());
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        jFormattedTextFieldDeadline.setText(dateFormat.format(task.getDeadline()));
+        idTaskUpdate = task.getId();
     }
 }
